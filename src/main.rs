@@ -68,12 +68,12 @@ fn estimate_price(x: i32, theta0: f32, theta1: f32) -> f32 {
 }
 
 fn train_model(records: &Vec<(i32, i32)>, learning_rate: f32, iterations: i32) -> (f32, f32) {
-    let mut theta0: f32 = 0.;
+    let mut theta0: f32 = 9000.;
     let mut theta1: f32 = 0.;
 
     for _ in 0..=iterations {
-        let next_tetha0 = learning_rate * records.iter().fold(0., |acc: f32, (x, y)| acc + estimate_price(*x, theta0, theta1) - *y as f32) / records.len() as f32;
-        let next_tetha1 = learning_rate * records.iter().fold(0., |acc: f32, (x, y)| acc + (estimate_price(*x, theta0, theta1) - *y as f32) * *x as f32) / records.len() as f32;
+        let next_tetha0 = 2. * learning_rate * records.iter().fold(0., |acc: f32, (x, y)| acc + estimate_price(*x, theta0, theta1) - *y as f32) / records.len() as f32;
+        let next_tetha1 = 2. * learning_rate * records.iter().fold(0., |acc: f32, (x, y)| acc + (estimate_price(*x, theta0, theta1) - *y as f32) * *x as f32) / records.len() as f32;
         theta0 -= next_tetha0;
         theta1 -= next_tetha1;
         println!("theta0: {theta0}, theta1: {theta1}");
@@ -110,10 +110,12 @@ fn main() {
     // for result in records {
     //     println!("km: {}, price: {}", result.0, result.1);
     // }
-    let model = train_model(&records, 0.00000000001, 40 );
+    let model = train_model(&records, 0.00000000001, 100 );
     let (a, b) = least_squares(&records);
+    println!("model.0: {}, model.1: {}", model.0, model.1);
     println!("theta0: {a}, theta1: {b}");
     if let Err(err) = plot_line(&records, model.0, model.1) {
+    // if let Err(err) = plot_line(&records, a, b) {
         println!("Error: {}", err);
         process::exit(1);
     }
