@@ -13,17 +13,20 @@ Y = data.iloc[:, 1]
 # plt.scatter(X, Y)
 # plt.show()
 
+# Normalization
+X = X/(np.max(X))
+
 # Building the model
 m = 0
-c = 9000
+c = 0
 
-L = 0.00000000001  # The learning Rate
-epochs = 100  # The number of iterations to perform gradient descent
+L = 0.1  # The learning Rate
+epochs = 1000  # The number of iterations to perform gradient descent
 
 n = float(len(X)) # Number of elements in X
 
 emes = [0]
-ces = [9000]
+ces = [0]
 
 # Performing Gradient Descent 
 for i in range(epochs): 
@@ -47,7 +50,7 @@ def loss_fun():
             totalError += (Y[i] - (m * X[i] + c)) ** 2
         return totalError / n
 
-    mp, cp = np.meshgrid(np.linspace(-1000, 1000, int(n)), np.linspace(-1000, 1000, int(n)))
+    mp, cp = np.meshgrid(np.linspace(-6000, 2000, int(n)), np.linspace(-1000, 9000, int(n)))
     # xx = np.outer(X, np.ones(int(n)))
     # yy = np.outer(Y, np.ones(int(n)))
     # y_pre = mp*X + cp
@@ -65,7 +68,17 @@ def loss_fun():
     ax.plot(emes, ces, zetas, color='red', linewidth=2)
     plt.show()
 
+def least_squares(x, y):
+    average_x = sum(x) / len(x)
+    average_y = sum(y) / len(y)
+
+    theta1 = sum((x - average_x) * (y - average_y)) / sum((x - average_x)**2)
+    theta0 = average_y - theta1 * average_x;
+    return (theta0, theta1)
+
 loss_fun()
+t0, t1 = least_squares(X, Y)
+print(f't0: {t0}, t1: {t1}')
 
 # Making predictions
 Y_pred = m*X + c
