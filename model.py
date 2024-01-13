@@ -8,13 +8,13 @@ plt.rcParams['figure.figsize'] = (12.0, 9.0)
 
 # Preprocessing Input data
 data = pd.read_csv('data.csv')
-X = data.iloc[:, 0]
+original_X = data.iloc[:, 0]
 Y = data.iloc[:, 1]
 # plt.scatter(X, Y)
 # plt.show()
 
 # Normalization
-X = X/(np.max(X))
+X = (original_X - min(original_X))/(max(original_X) - min(original_X))
 
 # Building the model
 m = 0
@@ -62,7 +62,7 @@ def loss_fun():
     ax.plot_surface(mp, cp, zp, cmap='viridis', edgecolor='green', alpha=0.5)
     # ax.plot3D(mp, cp, zp, 'green')
     ax.set_xlabel('m')
-    ax.set_ylabel('b')
+    ax.set_ylabel('c')
     ax.set_zlabel('error')
     zetas = [error(m, c) for m, c in zip(emes, ces)]
     ax.plot(emes, ces, zetas, color='red', linewidth=2)
@@ -76,13 +76,28 @@ def least_squares(x, y):
     theta0 = average_y - theta1 * average_x;
     return (theta0, theta1)
 
-loss_fun()
+# loss_fun()
+
 t0, t1 = least_squares(X, Y)
 print(f't0: {t0}, t1: {t1}')
+nt0, nt1 = least_squares(original_X, Y)
+print(f'non-normalize: t0: {nt0}, t1: {nt1}')
+rt1 = t1 / (max(original_X) - min(original_X))
+rt0 = t0 - (min(original_X) * rt1)
+print(f't1 / ({max(original_X)} - {min(original_X)}) = {rt1}')
+print(f't0 - ({min(original_X)} * rt0) = {rt0}')
+
+# Dis-normalization
+dis_m = m / (max(original_X) - min(original_X))
+dis_c = c - (min(original_X) * dis_m)
+print(dis_m, dis_c)
 
 # Making predictions
-Y_pred = m*X + c
+# Y_pred = m*X + c
+Y_pred = dis_m*original_X + dis_c
 
-plt.scatter(X, Y) 
-plt.plot(X, Y_pred, color='red')  # regression line
+# plt.scatter(X, Y)
+# plt.plot(X, Y_pred, color='red')  # regression line
+plt.scatter(original_X, Y)
+plt.plot(original_X, Y_pred, color='red')  # regression line
 plt.show()
