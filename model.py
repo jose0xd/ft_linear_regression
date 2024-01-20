@@ -20,22 +20,22 @@ X = (original_X - min(original_X))/(max(original_X) - min(original_X))
 m = 0
 c = 0
 
-L = 0.1  # The learning Rate
-epochs = 1000  # The number of iterations to perform gradient descent
+L = 0.5  # The learning Rate
+epochs = 200  # The number of iterations to perform gradient descent
 
 n = float(len(X)) # Number of elements in X
 
-emes = [0]
-ces = [0]
+emes = [m]
+ces = [c]
 
 # Performing Gradient Descent 
 for i in range(epochs): 
     Y_pred = m*X + c  # The current predicted value of Y
-    D_m = (-2/n) * sum(X * (Y - Y_pred))  # Derivative wrt m
-    D_c = (-2/n) * sum(Y - Y_pred)  # Derivative wrt c
+    D_m = (1/n) * sum(X * (Y_pred - Y))  # Derivative wrt m
+    D_c = (1/n) * sum(Y_pred - Y)  # Derivative wrt c
     m = m - L * D_m  # Update m
     c = c - L * D_c  # Update c
-    loss = (-1/n) * (sum(Y - Y_pred))**2
+    loss = (1/n) * (sum(Y_pred - Y))**2
     # print (m, c)
     print(f'm: {m}, c: {c}, loss: {loss}')
     emes.append(m)
@@ -76,7 +76,7 @@ def least_squares(x, y):
     theta0 = average_y - theta1 * average_x;
     return (theta0, theta1)
 
-# loss_fun()
+loss_fun()
 
 t0, t1 = least_squares(X, Y)
 print(f't0: {t0}, t1: {t1}')
@@ -84,8 +84,6 @@ nt0, nt1 = least_squares(original_X, Y)
 print(f'non-normalize: t0: {nt0}, t1: {nt1}')
 rt1 = t1 / (max(original_X) - min(original_X))
 rt0 = t0 - (min(original_X) * rt1)
-print(f't1 / ({max(original_X)} - {min(original_X)}) = {rt1}')
-print(f't0 - ({min(original_X)} * rt0) = {rt0}')
 
 # Dis-normalization
 dis_m = m / (max(original_X) - min(original_X))
