@@ -121,11 +121,12 @@ class Linear_Regression:
             value = input('Introduce a value to predict the output or "quit": ')
             if value == 'quit' or value == 'q':
                 break
-            if not value.isdigit():
+            try:
+                value = float(value)
+                print(f'From {value}, model predict: {self.predict(value)}')
+            except:
                 print('It should be a number')
-                continue
-            value = float(value)
-            print(f'From {value}, model predict: {self.predict(value)}')
+
 
 
 def main():
